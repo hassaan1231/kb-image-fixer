@@ -1,0 +1,212 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080d19">
+  <title>KB Image Fixer</title>
+  <link rel="stylesheet" href="style.css">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="KB Image Fixer home">
+      <span class="brand-icon">KB</span>
+      <span>IMAGE<span class="green">FIXER</span></span>
+    </a>
+    <span class="local-badge">
+      <span class="status-dot"></span> PRIVATE · LOCAL PROCESSING
+    </span>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="eyebrow"><span></span> SMART IMAGE COMPRESSION</div>
+      <h1>Smaller images.<br><span>Quality preserved.</span></h1>
+      <p>Compress images toward your target size without automatically
+        changing their dimensions. You stay in control.</p>
+    </section>
+
+    <section class="workspace">
+      <div class="section-heading">
+        <div>
+          <h2>Your image</h2>
+          <p>Choose an image to get started.</p>
+        </div>
+        <span class="step-label">01 / UPLOAD</span>
+      </div>
+
+      <label class="dropzone" id="dropzone" for="fileInput">
+        <input
+          id="fileInput"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          hidden
+        >
+        <div class="upload-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 16V4m0 0L7 9m5-5 5 5M5 14v5h14v-5"/>
+          </svg>
+        </div>
+        <h3>Drop your image here</h3>
+        <p>or <span class="green underline">browse files</span></p>
+        <span class="file-hint">JPG, PNG or WebP · Maximum 20 MB</span>
+      </label>
+
+      <div class="selected-file hidden" id="selectedFile">
+        <div class="file-symbol">IMG</div>
+        <div class="file-info">
+          <strong id="fileName">image.jpg</strong>
+          <span id="fileDetails">0 KB · 0 × 0 px</span>
+        </div>
+        <button class="icon-button" id="removeButton" type="button"
+          aria-label="Remove selected image" title="Remove image">×</button>
+      </div>
+
+      <div class="settings-grid">
+        <div class="section-heading settings-title">
+          <div>
+            <h2>Compression settings</h2>
+            <p>Find the right balance between size and quality.</p>
+          </div>
+          <span class="step-label">02 / CONFIGURE</span>
+        </div>
+
+        <div class="setting-card">
+          <label for="targetSize">Target file size</label>
+          <div class="input-with-unit">
+            <input id="targetSize" type="number" min="1" max="20000"
+              value="200" step="1">
+            <span>KB</span>
+          </div>
+          <p class="help-text">The app will try to get as close as possible.</p>
+        </div>
+
+        <div class="setting-card">
+          <label for="outputFormat">Output format</label>
+          <select id="outputFormat">
+            <option value="image/webp">WebP — usually smaller</option>
+            <option value="image/jpeg">JPEG — widely compatible</option>
+            <option value="image/png">PNG — lossless</option>
+          </select>
+          <p class="help-text">PNG is best when transparency or lossless output matters.</p>
+        </div>
+
+        <div class="setting-card quality-card" id="qualityCard">
+          <div class="label-row">
+            <label for="quality">Quality preference</label>
+            <span class="quality-value" id="qualityValue">85%</span>
+          </div>
+          <input id="quality" type="range" min="40" max="98" value="85">
+          <div class="range-labels">
+            <span>Smaller file</span>
+            <span>Better quality</span>
+          </div>
+          <p class="help-text" id="qualityHelp">
+            Balanced starting point. The app will search for a suitable quality.
+          </p>
+        </div>
+
+        <div class="setting-card resize-card">
+          <label class="toggle-row" for="allowResize">
+            <span>
+              <strong>Allow image resizing</strong>
+              <small>Off by default. Original dimensions stay unchanged.</small>
+            </span>
+            <input type="checkbox" id="allowResize">
+            <span class="toggle-ui" aria-hidden="true"></span>
+          </label>
+          <div class="resize-options hidden" id="resizeOptions">
+            <label for="maxWidth">Maximum width</label>
+            <div class="input-with-unit">
+              <input id="maxWidth" type="number" min="100" max="12000"
+                value="1920" step="100">
+              <span>px</span>
+            </div>
+            <p class="help-text">
+              Resizing is used only when necessary to help reach your target.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="warning-box hidden" id="formatWarning" role="status"></div>
+
+      <button id="compressButton" class="primary-button" type="button" disabled>
+        <span class="button-icon">✦</span>
+        <span id="buttonText">Compress image</span>
+        <span class="button-arrow">→</span>
+      </button>
+      <p class="privacy-note">
+        <span class="status-dot"></span>
+        Your image stays on your device. Nothing is uploaded.
+      </p>
+    </section>
+
+    <section class="results hidden" id="results" aria-live="polite">
+      <div class="section-heading">
+        <div>
+          <h2>Your compressed image</h2>
+          <p id="resultSubtitle">Compression results</p>
+        </div>
+        <span class="step-label">03 / RESULT</span>
+      </div>
+
+      <div class="result-stats">
+        <div class="stat-card">
+          <span>Original size</span>
+          <strong id="originalSize">—</strong>
+        </div>
+        <div class="stat-card highlight-stat">
+          <span>Compressed size</span>
+          <strong id="compressedSize">—</strong>
+        </div>
+        <div class="stat-card">
+          <span>Size reduction</span>
+          <strong id="reduction">—</strong>
+        </div>
+      </div>
+
+      <div class="preview-grid">
+        <div class="preview-card">
+          <div class="preview-heading">
+            <span>ORIGINAL</span>
+            <span id="originalDimensions">—</span>
+          </div>
+          <div class="preview-image">
+            <img id="originalPreview" alt="Original image preview">
+          </div>
+        </div>
+        <div class="preview-card">
+          <div class="preview-heading">
+            <span>COMPRESSED</span>
+            <span id="compressedDimensions">—</span>
+          </div>
+          <div class="preview-image">
+            <img id="compressedPreview" alt="Compressed image preview">
+          </div>
+        </div>
+      </div>
+
+      <div class="result-message" id="resultMessage" role="status"></div>
+
+      <div class="result-actions">
+        <button id="downloadButton" class="primary-button" type="button">
+          Download compressed image <span class="button-arrow">↓</span>
+        </button>
+        <button id="startOverButton" class="secondary-button" type="button">
+          Try another image
+        </button>
+      </div>
+    </section>
+
+    <footer>
+      <span class="brand-footer">KB <span class="green">IMAGE FIXER</span></span>
+      <span>Built for better image compression.</span>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
