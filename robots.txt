@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://kbfixerofficial.netlify.app/sitemap.xml
